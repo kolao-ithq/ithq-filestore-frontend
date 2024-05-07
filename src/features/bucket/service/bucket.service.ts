@@ -5,6 +5,7 @@ import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 import { BucketRoot } from "../model/bucket";
 import { DeleteBucketModel } from "../model/delete_bucket";
+import { BucketInfoRoot } from "../model/bucket_info";
 
 
 
@@ -25,7 +26,7 @@ export const FetchBuckets = async (): Promise<BucketRoot> => {
 export const CreateBucket = async (name: string): Promise<BucketRoot> => {
     try {
         const res = await ApiClinet.post('/api/v1/bucket', {
-            "bucket_name": name
+            "bucket_name": name.replace(/\s/g, "-")
         }, true);
         const data: BucketRoot = res.data;
         return data
@@ -50,3 +51,14 @@ export const DeleteBucket = async (name: string): Promise<DeleteBucketModel> => 
 }
 
 
+export const GetBucketInfo = async (name: string): Promise<BucketInfoRoot> => {
+    try {
+        const res = await ApiClinet.get(`/api/v1/bucket/info/${name}`, true);
+        const data: BucketInfoRoot = res.data;
+        return data
+    } catch (error) {
+        const err = error as AxiosError;
+        const dataError: BucketInfoRoot = err.response?.data as BucketInfoRoot;
+        return dataError;
+    }
+}

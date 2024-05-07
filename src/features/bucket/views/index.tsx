@@ -2,7 +2,7 @@ import { Button } from '@/components/ui/button'
 import { useAppDispatch } from '@/lib/store';
 import { Box, CirclePlus, EllipsisVertical } from 'lucide-react'
 import React, { useEffect } from 'react'
-import { bucketSelector, deleteBucket, fetchBuckets } from '../controller/bucket.controller';
+import { bucketSelector, deleteBucket, fetchBuckets, getBucketInfo } from '../controller/bucket.controller';
 import { useSelector } from 'react-redux';
 import { DialogCreatBucket } from './component/form_create_bucket';
 import {
@@ -43,6 +43,24 @@ export default function IndexBucket() {
 
     return (
         <div className='flex flex-col p-8'>
+            {
+                bucketReducer.BucketInfo == null ?
+                    <div>
+                        Bucket Info Not Found
+                    </div> :
+                    <div className='flex flex-col'>
+
+                        <div>
+                            ID: <strong>{bucketReducer.BucketInfo.bucket_id}</strong>
+                        </div>
+                        <div>
+                            Bucket name: <strong>{bucketReducer.BucketInfo.bucket_name}</strong>
+                        </div>
+                        <div>
+                            Bucket Key: <strong>{bucketReducer.BucketInfo.bucket_key}</strong>
+                        </div>
+                    </div>
+            }
             <div className='flex flex-row items-center'>
                 <div className='text-xl font-bold pr-4'>
                     ຂໍ້ມູນຂອງ Buckets
@@ -79,7 +97,9 @@ export default function IndexBucket() {
                                                 <MenubarMenu>
                                                     <MenubarTrigger> <EllipsisVertical /></MenubarTrigger>
                                                     <MenubarContent>
-                                                        <Button className={cn("bg-white text-black w-full hover:bg-accent text-sm text-start flex flex-row justify-start items-start")}>
+                                                        <Button onClick={() => {
+                                                            dispatch(getBucketInfo(e.name))
+                                                        }} className={cn("bg-white text-black w-full hover:bg-accent text-sm text-start flex flex-row justify-start items-start")}>
                                                             <div className="px-3">
                                                                 Info
                                                             </div>
