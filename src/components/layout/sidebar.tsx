@@ -37,7 +37,7 @@ export default function SideBar() {
                     <div className='relative w-8 h-8 mr-4'>
                         <CloudUpload className='w-10 h-10 text-primary' />
                     </div>
-                    <div className={cn("text-2xl font-bold text-gray-500", montserrat.className)}>
+                    <div className={cn("text-2xl font-bold text-black", montserrat.className)}>
                         File Store
                     </div>
                 </Link>

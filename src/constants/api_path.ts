@@ -4,6 +4,7 @@ class AppApiPath {
     static baseUrl = "http://10.150.1.88:3047"
     // api path
     static authSignin = "/auth/login-app";
+    // /about
 }
 
 export default AppApiPath;
