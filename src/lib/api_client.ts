@@ -14,10 +14,12 @@ const axiosInstance = axios.create({
 
 const getHttpHeaders = (isAuthenticated = false): AxiosRequestConfig => {
     const token: any = cookies().get('token')
+    console.log("token: ", token);
+    
     if (isAuthenticated) {
         return {
             headers: {
-                Authorization: `Bearer ${token}`,
+                Authorization: `Bearer ${token.value}`,
             },
         };
     }
@@ -27,11 +29,17 @@ const getHttpHeaders = (isAuthenticated = false): AxiosRequestConfig => {
 const get = (path: string): Promise<AxiosResponse> =>
     axiosInstance.get(path, getHttpHeaders());
 
-const del = (path: string): Promise<AxiosResponse> =>
-    axiosInstance.delete(path, getHttpHeaders());
+const getMethodWithToken = (path: string): Promise<AxiosResponse> =>
+    axiosInstance.get(path, getHttpHeaders(true));
 
-const post = (path: string, data: any): Promise<AxiosResponse> =>
-    axiosInstance.post(path, data, getHttpHeaders());
+// const del = (path: string): Promise<AxiosResponse> =>
+//     axiosInstance.delete(path, getHttpHeaders());
+
+const del = (path: string, isAuthenticated = false): Promise<AxiosResponse> =>
+    axiosInstance.delete(path, getHttpHeaders(isAuthenticated));
+
+const post = (path: string, data: any, auth=false): Promise<AxiosResponse> =>
+    axiosInstance.post(path, data, getHttpHeaders(auth));
 
 const put = (path: string, data: any): Promise<AxiosResponse> =>
     axiosInstance.post(path, data, getHttpHeaders());
@@ -41,6 +49,7 @@ const patch = (path: string, data: any): Promise<AxiosResponse> =>
 
 const ApiClinet = {
     get,
+    getMethodWithToken,
     del,
     post,
     put,
