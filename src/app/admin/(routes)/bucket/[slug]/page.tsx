@@ -1,8 +1,18 @@
-"use client"
 
-import React from 'react'
-import { useRouter } from 'next/router'
+import { Avatar } from "@/components/ui/avatar";
+import { bucketSelector } from "@/features/bucket/controller/bucket.controller";
+import { useAppDispatch } from "@/lib/store";
+import { CloudHail } from "lucide-react";
+import { useSelector } from "react-redux";
 
-import ItemPage from '@/features/bugkets/views/items';
 
-export default function Page({ params }: { params: { slug: string } }) { return (<ItemPage params={params} />) }
+export default function Page({ params }: { params: { slug: string } }) {
+    const dispatch = useAppDispatch();
+    const bucketReducer = useSelector(bucketSelector);
+    return (
+        <div className="h-screen w-full flex flex-col justify-center items-center">
+            Buget {params.slug}
+            API-Key: {bucketReducer.BucketInfo?.bucket_key}
+        </div>
+    )
+}
