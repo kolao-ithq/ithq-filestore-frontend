@@ -171,7 +171,7 @@ export default function BucketPage() {
                 }
 
 
-                <SweetAlert2 {...swalProps}
+                {/* <SweetAlert2 {...swalProps}
                     didClose={() => {
                         Swal.fire({
                             title: "Cancelled",
@@ -207,7 +207,7 @@ export default function BucketPage() {
                         }
                         // run when clieked in confirm and promise is resolved...
                     }}
-                />
+                /> */}
 
 
                 <div className='h-16'></div>        {/* <ScrollArea className="w-auto h-screen"></ScrollArea> */}
