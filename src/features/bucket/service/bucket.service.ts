@@ -6,6 +6,7 @@ import { redirect } from "next/navigation";
 import { BucketRoot } from "../model/bucket";
 import { DeleteBucketModel } from "../model/delete_bucket";
 import { BucketInfoRoot } from "../model/bucket_info";
+import { UploadFilePayload, UploadFileRoot } from "../model/upload_file";
 
 
 
@@ -59,6 +60,19 @@ export const GetBucketInfo = async (name: string): Promise<BucketInfoRoot> => {
     } catch (error) {
         const err = error as AxiosError;
         const dataError: BucketInfoRoot = err.response?.data as BucketInfoRoot;
+        return dataError;
+    }
+}
+
+
+export const UploadFile = async (payload: UploadFilePayload): Promise<UploadFileRoot> => {
+    try {
+        const res = await ApiClinet.postWITHAPIKEY(`api/v1/file/upload`, payload.formData, true, payload.apiKey);
+        const data: UploadFileRoot = res.data;
+        return data
+    } catch (error) {
+        const err = error as AxiosError;
+        const dataError: UploadFileRoot = err.response?.data as UploadFileRoot;
         return dataError;
     }
 }

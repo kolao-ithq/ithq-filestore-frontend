@@ -1,15 +1,17 @@
 import { RootState } from "@/lib/store"
 import { PayloadAction, createAsyncThunk, createSlice } from "@reduxjs/toolkit";
 import { BucketModel, BucketRoot } from "../model/bucket";
-import { CreateBucket, DeleteBucket, FetchBuckets, GetBucketInfo } from "../service/bucket.service";
+import { CreateBucket, DeleteBucket, FetchBuckets, GetBucketInfo, UploadFile } from "../service/bucket.service";
 import { DeleteBucketModel } from "../model/delete_bucket";
 import { toast } from 'react-toastify';
 import { BucketInfoData, BucketInfoRoot } from "../model/bucket_info";
+import { UploadFileData, UploadFilePayload, UploadFileRoot } from "../model/upload_file";
 
 export const fetchBuckets = createAsyncThunk("bucket/fetchBuckets", async () => await FetchBuckets());
 export const createBucket = createAsyncThunk("bucket/createBucket", async (payload: string) => await CreateBucket(payload));
 export const deleteBucket = createAsyncThunk("bucket/deleteBucket", async (payload: string) => await DeleteBucket(payload));
 export const getBucketInfo = createAsyncThunk("bucket/getBucketInfo", async (payload: string) => await GetBucketInfo(payload));
+export const uploadFile = createAsyncThunk("bucket/uploadFile", async (payload: UploadFilePayload) => await UploadFile(payload));
 
 
 type StateProp = {
@@ -42,7 +44,7 @@ const bucketController = createSlice({
                 },
             ).addMatcher(
                 (action) => action.type.endsWith("/fulfilled"),
-                (state, action: PayloadAction<BucketRoot | DeleteBucketModel | BucketInfoRoot>) => {
+                (state, action: PayloadAction<BucketRoot | DeleteBucketModel | BucketInfoRoot | UploadFileRoot>) => {
                     state.BucketLoading = false;
                     if (action.type.includes("fetchBuckets")) {
                         state.Buckets = (action.payload as BucketRoot)?.data as BucketModel[];
@@ -68,10 +70,17 @@ const bucketController = createSlice({
                     } else if (action.type.includes("getBucketInfo")) {
                         var bucketInfo: BucketInfoRoot = action.payload as BucketInfoRoot
                         if (bucketInfo.status) {
-                            toast.success(`${bucketInfo.data.bucket_name} successfully removed! 🚀`);
+                            // toast.success(`${bucketInfo.data.bucket_name} successfully removed! 🚀`);
                             state.BucketInfo = bucketInfo.data as BucketInfoData
                         } else {
                             toast.error(`${bucketInfo.error}`);
+                        }
+                    } else if (action.type.includes("uploadFile")) {
+                        var uploadFileResult: UploadFileRoot = action.payload as UploadFileRoot;
+                        if (uploadFileResult.status) {
+                            toast.success(`${uploadFileResult.data.file_name} successfully created! 🚀`);
+                        } else {
+                            toast.error(`${uploadFileResult.error}`);
                         }
                     }
                 },

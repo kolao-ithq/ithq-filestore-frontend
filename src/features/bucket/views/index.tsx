@@ -91,7 +91,6 @@ export default function IndexBucket() {
                                                 <div className="leading-7 text-gray-600 font-bold">{e.name}</div>
                                             </div>
                                         </Link>
-
                                         <div className='text-gray-400'>
                                             <Menubar>
                                                 <MenubarMenu>

@@ -1,8 +1,13 @@
 "use client"
 import { Button } from '@/components/ui/button'
+import { uploadFile } from '@/features/bucket/controller/bucket.controller';
+import { UploadFilePayload } from '@/features/bucket/model/upload_file';
+import { useAppDispatch } from '@/lib/store';
 import React, { FormEvent, useState } from 'react'
 
 export default function page() {
+    const dispatch = useAppDispatch();
+
     const [file, setFile] = useState<File>()
     const [files, setFiles] = useState<File[]>([])
     const onSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -46,7 +51,17 @@ export default function page() {
         });
     };
 
+    const onSubmitFile = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if (!file) return
+        const data = new FormData()
+        const payload = {
+            apiKey: ""
+        } as UploadFilePayload
+        dispatch(uploadFile(payload))
+    }
     return (
+        
         <div className='p-8 flex flex-col'>
             <form onSubmit={onSubmit}>
                 <h1 className='font-bold'>
