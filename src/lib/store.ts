@@ -1,12 +1,14 @@
 import authController from "@/features/auth/controller/auth.controller";
-import bucketController from "@/features/bucket/controller/bucket.controller";
+import bucketController from "@/features/bugkets/controller/bucket.controller";
 import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux"
 
 export const store = configureStore({
     reducer: {
         authController,
-        bucketController
+        bucketController,
+        // infoController,
+        // itemController
     },
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
