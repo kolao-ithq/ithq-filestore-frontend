@@ -209,12 +209,12 @@ export default function ItemPage({ params }: { params: { slug: string } }) {
                         </Dialog>
                     </div>
 
-                    <ScrollArea className="w-auto h-[681px]">
+                    <ScrollArea className="w-auto h-screen p-4">
                         {itemReducer.item && itemReducer.item.map((ir, rkey: number) => rkey % column === 0 ?
 
                             <>
                                 <Dialog >
-                                    <div className='flex flex-row'>
+                                    <div className='flex flex-row items-center justify-center '>
 
                                         {itemReducer.item.map((ic: any, ckey: number) => {
                                             const name = ic.name

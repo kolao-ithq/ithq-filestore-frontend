@@ -21,11 +21,11 @@ const routes = [
         icon: CloudUpload,
         herf: "/admin/bucket"
     },
-    {
-        label: "User",
-        icon: User2Icon,
-        herf: "/admin/user"
-    }
+    // {
+    //     label: "User",
+    //     icon: User2Icon,
+    //     herf: "/admin/user"
+    // }
 ]
 
 export default function SideBar() {

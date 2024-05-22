@@ -139,7 +139,7 @@ export default function BucketPage() {
                                 <>
                                     {(rkey > 0 ? '' : <div onClick={() => setPressBucket(null)} className='h-3'></div>)}
 
-                                    <div className='flex flex-row'>
+                                    <div className='flex flex-row' key={rkey}>
 
                                         {bucketReducer.buckets.map((bc: any, ckey: number) => {
                                             const name = bc.name
@@ -148,7 +148,8 @@ export default function BucketPage() {
                                                 <>
                                                     {(ckey > rkey ? '' : <div onClick={() => setPressBucket(null)} className='w-5'></div>)}
 
-                                                    <div onDoubleClick={() => openBucket(name)} onMouseEnter={() => setPointBucket(ckey)}
+                                                    <div key={rkey}
+                                                        onDoubleClick={() => openBucket(name)} onMouseEnter={() => setPointBucket(ckey)}
                                                         onMouseLeave={() => setPointBucket(null)}       // onClick={() => setViewDetails(name)} 
                                                         className={'flex flex-col w-[287px] rounded-xl ' + (name === viewDetails ?
                                                             'bg-sky-200' : (ckey === pointBucket ? 'bg-gray-200' : 'bg-slate-100'))} >
