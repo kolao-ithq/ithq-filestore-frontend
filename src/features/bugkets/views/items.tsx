@@ -6,32 +6,25 @@ import ItemLoader from './iLoader';
 
 import { useSelector } from 'react-redux';
 import { useAppDispatch } from '@/lib/store';
-import { deleteFile } from '../controller/bucket.controller';
+import { deleteFile, infoThunk, uploadFile } from '../controller/bucket.controller';
 
 import { bucketSelector, itemThunk, setItem } from '../controller/bucket.controller';
 import { BucketItemModel } from '../models/bucket.model';
 
-import { EllipsisVertical, Trash2, FolderOutput, X, Download, UserPlus, Link2, FolderInput, Eye, Copy, UploadCloud } from 'lucide-react';
+import { EllipsisVertical, Trash2, FolderOutput, X, Download, UserPlus, Link2, FolderInput, Eye, Copy, UploadCloud, Router } from 'lucide-react';
 
 import { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger } from "@/components/ui/tooltip"
 import { Breadcrumb, BreadcrumbItem, BreadcrumbLink, BreadcrumbList, BreadcrumbPage, BreadcrumbSeparator } from "@/components/ui/breadcrumb"
 
-// import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 import { ScrollArea } from "@/components/ui/scroll-area"
 import { Button } from '@/components/ui/button';
-
-// import { Button } from "@/components/ui/button"
 import { Input } from '@/components/ui/input';
-import { Folder, Plus } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
-
 import MoreActionsList from '@/features/fileDetail/views/pages/moreAction';
-import { UploadFile } from '../services/bucket.service';
-import { UploadFileRoot, UploadPayload } from '../models/create_bucket_model';
-
-// import { AspectRatio } from '@radix-ui/react-aspect-ratio';
+import { UploadFilePayload, UploadFileRoot } from '../models/create_bucket_model';
+import Swal from 'sweetalert2'
 
 
 export default function ItemPage({ params }: { params: { slug: string } }) {
@@ -52,55 +45,44 @@ export default function ItemPage({ params }: { params: { slug: string } }) {
     React.useEffect(() => {
         setColumn(viewDetails ? 5 : 4);
         loadItem();
+        dispatch(infoThunk(params.slug))
     },
-        [viewDetails, setColumn])
+        [viewDetails, setColumn, dispatch])
 
     const [pointItem, setPointItem] = React.useState<any>(null)
     const [pressItem, setPressItem] = React.useState<any>(null)
     const [pointSelect, setPointSelect] = React.useState<any>(null)
+    const [file, setFile] = React.useState<File>()
 
     const bucketUrl = 'https://ithq.file.kokkoksole.com/buckets/' + params.slug + '/';
 
 
-    async function uploadFile(event: FormEvent<HTMLFormElement>) {
+    const onSubmitFile = async (e: React.FormEvent<HTMLFormElement>) => {
+        e.preventDefault()
+        if (!file) return
+        const data = new FormData()
+        data.set('FILES', file)
+        data.set('BUCKET', params.slug)
+        const payload = {
+            formData: data,
+            apiKey: itemReducer.info?.data.bucket_key   // .BucketInfo?.bucket_key
+        } as UploadFilePayload
+        dispatch(uploadFile(payload)).then((value: any) => {
+            const res = value.payload as UploadFileRoot
+            if (res.status) {
 
-        // setSwalProps({
-        //     show: true,
-        //     title: 'Create Bucket',
-        //     text: 'Would you like to create new bucket?',
-        //     icon: 'question',
-        //     showCancelButton: true,
-        //     showConfirmButton: true,
-        //     reverseButtons: true,
-        //     confirmButtonColor: "#F58522",
-        //     confirmButtonText: "Yes, create it!"
-        // });
+                Swal.fire({
+                    title: "Uploaded!",
+                    text: "Your file has been uploaded.",
+                    icon: "success",
+                    showConfirmButton: false,
+                    timer: 1500,
+                    willClose: loadItem
+                });
 
-        event.preventDefault()
-        const formData = new FormData(event.currentTarget)
-        // const bucket_name = formData.get("bucket_name")
-
-        // setBucket_name(bucket_name)
-
-        const uploadPayload = {
-            bucket: params.slug,
-            file: formData.get("file_name")
-        }
-
-        // dispatch(uploadFile(bucket_name as string)).then((value) => {      // dispatch(createThunk("TEST-Create3")).then((value) => {
-
-        // dispatch(UploadFile(uploadPayload as UploadPayload)).then((value: any) => {
-
-        //     const data = value.payload as UploadFileRoot
-
-        //     if (data.status) {
-        //         // loadBucket()
-        //         // toast.success("ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ ITHQ File Store");
-        //         //                 router.push("/admin/bucket")
-        //     } else {
-        //         // toast.error("ບໍ່ສາມາດເຂົ້າສູ່ລະບົບ: " + data.error);
-        //     }
-        // })
+                // loadItem()
+            }
+        })
     }
 
     function copyToClipboard() {
@@ -196,16 +178,32 @@ export default function ItemPage({ params }: { params: { slug: string } }) {
                                 </Button>
                             </DialogTrigger>
                             <DialogContent className="sm:max-w-[325px]">
-                                <form onSubmit={uploadFile}>
+                                <form onSubmit={onSubmitFile}>
                                     <DialogHeader>
                                         <DialogTitle>New File</DialogTitle>
                                     </DialogHeader>
-                                    <div className="grid gap-4 py-4">
-                                        <Input name="file_name" type='file' placeholder="File name" required className="col-span-3" />
+                                    {/* <h1 className='font-bold'> Upload Image </h1>
+                                    <div className='flex flex-col p-8'> */}
+                                    <div className="grid">
+                                        <div className='p-0'>
+                                            {file && (
+                                                <div className='mt-5'>
+                                                    {/* <h2 className='font-bold'>Selected Image:</h2> */}
+                                                    <img src={URL.createObjectURL(file)} alt="Selected Image" className='rounded-md' />
+                                                </div>
+                                            )}
+                                            {/* <h1 className='p-4'> One File </h1> */}
+                                            <Input type="file" name="file" onChange={(e) => setFile(e.target.files?.[0])} placeholder="File name" required className="col-span-3 mt-5 mb-5 text-orange-400" />
+                                            {/* <hr className='p-2' /> */}
+                                            {/* <h1 className='p-4'> Multi Files </h1> */}
+                                        </div>
+                                        {/* <Button type={"submit"}>
+                                            Submit
+                                        </Button> */}
+                                        <DialogFooter>
+                                            <Button type={"submit"}>Upload</Button>
+                                        </DialogFooter>
                                     </div>
-                                    <DialogFooter>
-                                        <Button type={"submit"}>Upload</Button>
-                                    </DialogFooter>
                                 </form>
                             </DialogContent>
                         </Dialog>
@@ -231,43 +229,41 @@ export default function ItemPage({ params }: { params: { slug: string } }) {
                                                     onClick={() => setPressItem(name)}
                                                     onMouseEnter={() => setPointItem(ckey)} onMouseLeave={() => setPointItem(null)} >
 
-                                                    <div className='flex flex-row justify-between mt-1 mb-1'>
-                                                        <div className='flex flex-row text-xs font-medium text-gray-700 mt-3'>
-                                                            <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger className='mb-2 ml-4 mr-4'> {name.substring(0, 21)}... </TooltipTrigger>
-                                                                    <TooltipContent side="bottom" align='start' className="text-white text-xs font-normal h-7 bg-zinc-800 border-none rounded-r-sm">
-                                                                        <p>{name}</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
+                                                    <div className='flex flex-row justify-between content-between mt-3 mb-1 text-xs font-medium text-gray-700'>
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger className='mb-2 ml-4 mr-4'><p> {name.substring(0, 20) + (name.length > 20 ? '...' : '')} </p></TooltipTrigger>
+                                                                <TooltipContent side="bottom" align='start' className="text-white text-xs font-normal h-7 bg-zinc-800 border-none rounded-r-sm">
+                                                                    <p>{name}</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
 
-                                                            <TooltipProvider>
-                                                                <Tooltip>
-                                                                    <TooltipTrigger className='mb-2 ml-4 mr-0'>
-                                                                        {/* <DialogTrigger asChild>
-                                                                            <Eye size={16} className={'text-orange-600'} /> 
-                                                                            </DialogTrigger> */}
-                                                                        <Link2 size={16} className='text-orange-500' onClick={copyToClipboard} />
-                                                                    </TooltipTrigger>
-                                                                    <TooltipContent side="bottom" align='center' className="text-white text-xs font-normal h-7 bg-zinc-800 border-none rounded-r-sm">
-                                                                        {/* <p>View</p> */}
-                                                                        <p>Copy link</p>
-                                                                    </TooltipContent>
-                                                                </Tooltip>
-                                                            </TooltipProvider>
-                                                        </div>
+                                                        <TooltipProvider>
+                                                            <Tooltip>
+                                                                <TooltipTrigger className='mb-2 ml-4 mr-4'>
+                                                                    {/* <DialogTrigger asChild>
+                                                                        <Eye size={16} className={'text-orange-600'} />
+                                                                    </DialogTrigger> */}
+                                                                    <Link2 size={16} className='text-orange-500' onClick={copyToClipboard} />
+                                                                </TooltipTrigger>
+                                                                <TooltipContent side="bottom" align='center' className="text-white text-xs font-normal h-7 bg-zinc-800 border-none rounded-r-sm">
+                                                                    {/* <p>View</p> */}
+                                                                    <p>Copy link</p>
+                                                                </TooltipContent>
+                                                            </Tooltip>
+                                                        </TooltipProvider>
                                                     </div>
 
                                                     <DialogTrigger asChild>
-                                                        <img className="rounded-md object-cover ml-2 mr-2 h-[178px] w-[206px]" alt="Photo"
+                                                        <img className="rounded-md object-cover ml-2 mr-2 h-[181px] w-[206px]" alt="Photo"
                                                             src={bucketUrl + name} />
                                                     </DialogTrigger>
                                                 </div>
 
                                                 <DialogContent className="h-[720px]">
                                                     <DialogHeader>
-                                                        <DialogTitle className='font-normal text-orange-500'>{name}</DialogTitle>
+                                                        <DialogTitle className='font-normal text-orange-500'>{name.substring(0, 40)}</DialogTitle>
                                                     </DialogHeader>
 
                                                     <img className="rounded-md object-cover mb-5 h-[635px] w-[500px]" alt="Photo"

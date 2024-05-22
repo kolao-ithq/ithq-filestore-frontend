@@ -3,8 +3,7 @@ import { RootState } from "@/lib/store"
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit"
 import { BugketModel, BucketInfoModel, BucketItemModel } from "../models/bucket.model"
 import { FetchBucket, FetchInfo, FetchItem, AddBucket, DeleteBucket, DeleteFile, UploadFile } from "../services/bucket.service"
-import { LoginPayload } from "@/features/auth/models/login.model"
-import { UploadPayload } from "../models/create_bucket_model"
+import { UploadFilePayload } from "../models/create_bucket_model"
 
 type StateProp = {
     bucketLoading: boolean,
@@ -76,7 +75,8 @@ export const itemThunk = createAsyncThunk( 'server/itemThunk', async (payload: s
 export const createThunk = createAsyncThunk( 'server/createThunk', async (payload: string) => await AddBucket(payload) );
 export const deleteBucket = createAsyncThunk( "server/deleteBucket", async (payload: string) => await DeleteBucket(payload));
 export const deleteFile = createAsyncThunk( "server/deleteFile", async (payload: string) => await DeleteFile(payload));
-export const uploadFile = createAsyncThunk( "server/uploadFile", async (payload: UploadPayload) => await UploadFile(payload));
+// export const uploadFile = createAsyncThunk( "server bucket/uploadFile", async (payload: UploadPayload) => await UploadFile(payload));
+export const uploadFile = createAsyncThunk("server/uploadFile", async (payload: UploadFilePayload) => await UploadFile(payload));
 
 export const bucketSelector = (state: RootState) => state.bucketController;
 export const { setBugkets, setItem } = bucketController.actions

@@ -12,7 +12,7 @@ const axiosInstance = axios.create({
     responseType: "json",
 });
 
-const getHttpHeaders = (isAuthenticated = false): AxiosRequestConfig => {
+const getHttpHeaders1 = (isAuthenticated = false): AxiosRequestConfig => {
     const token: any = cookies().get('token')
     console.log("token: ", token);
     
@@ -22,6 +22,28 @@ const getHttpHeaders = (isAuthenticated = false): AxiosRequestConfig => {
                 Authorization: `Bearer ${token.value}`,
             },
         };
+    }
+    return {};
+};
+
+const getHttpHeaders = (isAuthenticated = false, apiKey?: string): AxiosRequestConfig => {
+    const token: any = cookies().get('token')?.value
+    if (isAuthenticated) {
+        if (apiKey == null) {
+            return {
+                headers: {
+                    Authorization: `Bearer ${token}`
+                },
+            };
+        } else {
+            return {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                    "x-api-key": apiKey
+                },
+            };
+        }
+
     }
     return {};
 };
@@ -38,8 +60,14 @@ const getMethodWithToken = (path: string): Promise<AxiosResponse> =>
 const del = (path: string, isAuthenticated = false): Promise<AxiosResponse> =>
     axiosInstance.delete(path, getHttpHeaders(isAuthenticated));
 
-const post = (path: string, data: any, auth=false): Promise<AxiosResponse> =>
-    axiosInstance.post(path, data, getHttpHeaders(auth));
+// const post = (path: string, data: any, auth=false): Promise<AxiosResponse> =>
+//     axiosInstance.post(path, data, getHttpHeaders(auth));
+
+const post = (path: string, data: any, isAuthenticated = false): Promise<AxiosResponse> =>
+    axiosInstance.post(path, data, getHttpHeaders(isAuthenticated));
+
+const postWITHAPIKEY = (path: string, data: any, isAuthenticated = false, apiKey: string): Promise<AxiosResponse> =>
+    axiosInstance.post(path, data, getHttpHeaders(isAuthenticated, apiKey));
 
 const put = (path: string, data: any): Promise<AxiosResponse> =>
     axiosInstance.post(path, data, getHttpHeaders());
@@ -52,6 +80,7 @@ const ApiClinet = {
     getMethodWithToken,
     del,
     post,
+    postWITHAPIKEY,
     put,
     patch,
 }

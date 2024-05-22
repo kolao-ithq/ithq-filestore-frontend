@@ -2,7 +2,7 @@
 import ApiClinet from "@/lib/api_client"
 import { RootBugketModel, BucketInfoModel, BucketItemModel } from "../models/bucket.model"
 import { AxiosError } from "axios"
-import { CreateBucketRoot, DeleteBucketModel, DeleteFileModel, UploadFileRoot, UploadPayload } from "../models/create_bucket_model"
+import { CreateBucketRoot, DeleteBucketModel, DeleteFileModel, UploadFilePayload, UploadFileRoot } from "../models/create_bucket_model"
 
 
 const FetchBucket = async (): Promise<RootBugketModel> => {
@@ -36,7 +36,6 @@ const FetchInfo = async (name: String): Promise<BucketInfoModel> => {
 
 const FetchItem = async (name: string): Promise<BucketItemModel> => {
     try {
-        // const res = await ApiClinet.getMethodWithToken('/api/v1/bucket/get-items/LCC')
         const res = await ApiClinet.getMethodWithToken(`/api/v1/bucket/get-items/${name}`)
         const data: BucketItemModel = res.data
         return data
@@ -66,15 +65,14 @@ const AddBucket = async (bucketName: string): Promise<CreateBucketRoot> => {
 }
 
 
-export const UploadFile = async (payload: UploadPayload): Promise<UploadFileRoot> => {
+export const UploadFile = async (payload: UploadFilePayload): Promise<UploadFileRoot> => {
     try {
-        const res = await ApiClinet.post('api/v1/file/upload', payload);
+        const res = await ApiClinet.postWITHAPIKEY(`api/v1/file/upload`, payload.formData, true, payload.apiKey);
         const data: UploadFileRoot = res.data;
         return data
     } catch (error) {
         const err = error as AxiosError;
         const dataError: UploadFileRoot = err.response?.data as UploadFileRoot;
-        console.log(dataError);
         return dataError;
     }
 }

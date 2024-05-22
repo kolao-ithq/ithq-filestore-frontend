@@ -10,24 +10,6 @@ export interface CreateBucketData {
 }
 
 
-export interface UploadFileRoot {
-  data: UploadFileData
-  status: boolean
-  error: string
-}
-
-export interface UploadFileData { 
-  bucket: string
-  file: any
-  // bucket_id: number
-  // bucket_name: string
-  // bucket_key: string
-}
-
-export interface UploadPayload {
-  bucket: string
-  file: any
-}
 
 
 export interface DeleteBucketModel {
@@ -43,4 +25,25 @@ export interface DeleteFileModel {
   data: string
   status: boolean
   fileName: string
+}
+
+
+
+
+export interface UploadFileRoot {
+  data: UploadFileData
+  status: boolean
+  error: string
+}
+
+export interface UploadFileData {
+  bucket: string
+  file_name: string
+  file_path: string
+}
+
+
+export interface UploadFilePayload {
+  formData: FormData
+  apiKey: string
 }

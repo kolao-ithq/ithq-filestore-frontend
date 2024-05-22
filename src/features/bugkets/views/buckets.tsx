@@ -11,8 +11,6 @@ import { Input } from '@/components/ui/input';
 import { Folder, Plus } from 'lucide-react';
 
 import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
-
-import SweetAlert2 from 'react-sweetalert2';
 import Swal from 'sweetalert2'
 
 import { useRouter } from 'next/navigation'
@@ -21,6 +19,8 @@ import { bucketThunk, bucketSelector, setBugkets, createThunk } from '../control
 import { useAppDispatch } from '@/lib/store';
 import { RootBugketModel } from '../models/bucket.model';
 import { CreateBucketRoot } from '../models/create_bucket_model';
+
+import TreeView from '@/features/fileDetail/views/pages/tree';
 
 
 export default function BucketPage() {
@@ -40,42 +40,52 @@ export default function BucketPage() {
 
     async function addBucket(event: FormEvent<HTMLFormElement>) {
 
-        setSwalProps({
-            show: true,
-            title: 'Create Bucket',
-            text: 'Would you like to create new bucket?',
-            icon: 'question',
-            showCancelButton: true,
-            showConfirmButton: true,
-            reverseButtons: true,
-            confirmButtonColor: "#F58522",
-            confirmButtonText: "Yes, create it!"
-        });
+        // setSwalProps({
+        //     show: true,
+        //     title: 'Create Bucket',
+        //     text: 'Would you like to create new bucket?',
+        //     icon: 'question',
+        //     showCancelButton: true,
+        //     showConfirmButton: true,
+        //     reverseButtons: true,
+        //     confirmButtonColor: "#F58522",
+        //     confirmButtonText: "Yes, create it!"
+        // });
 
         event.preventDefault()
         const formData = new FormData(event.currentTarget)
         const bucket_name = formData.get("bucket_name")
-
-        setBucket_name(bucket_name)
 
         // const loginPayload = {
         //     username: formData.get("username"),
         //     password: formData.get("password")
         // }
 
-        // dispatch(createThunk(bucket_name as string)).then((value) => {      // dispatch(createThunk("TEST-Create3")).then((value) => {
-        //     // dispatch(LoginThunk(loginPayload as LoginPayload)).then((value) => {
+        dispatch(createThunk(bucket_name as string)).then((value) => {      // dispatch(createThunk("TEST-Create3")).then((value) => {
+            // dispatch(LoginThunk(loginPayload as LoginPayload)).then((value) => {
 
-        //     const data = value.payload as CreateBucketRoot
+            const data = value.payload as CreateBucketRoot
 
-        //     if (data.status) {
-        //         // loadBucket()
-        //         // toast.success("ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ ITHQ File Store");
-        //         //                 router.push("/admin/bucket")
-        //     } else {
-        //         // toast.error("ບໍ່ສາມາດເຂົ້າສູ່ລະບົບ: " + data.error);
-        //     }
-        // })
+            if (data.status) {
+
+                Swal.fire({
+                    title: "Created!",
+                    text: "Your bucket has been created.",
+                    icon: "success",
+                    // confirmButtonColor: "#F58522",
+                    // position: 'center-right',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    willClose: loadBucket
+                });
+
+                // loadBucket()
+                // toast.success("ຍິນດີຕ້ອນຮັບເຂົ້າສູ່ ITHQ File Store");
+                //                 router.push("/admin/bucket")
+            } else {
+                // toast.error("ບໍ່ສາມາດເຂົ້າສູ່ລະບົບ: " + data.error);
+            }
+        })
     }
 
 
@@ -84,8 +94,6 @@ export default function BucketPage() {
 
     const [viewDetails, setViewDetails] = React.useState<any>(null) // React.useState(true) 
     const [column, setColumn] = React.useState<number>(4)
-    const [swalProps, setSwalProps] = React.useState({});
-    const [bucket_name, setBucket_name] = React.useState<any>(null)
 
     React.useEffect(() => {
         setColumn(viewDetails === null ? 4 : 3);
@@ -170,45 +178,7 @@ export default function BucketPage() {
                     </>
                 }
 
-
-                <SweetAlert2 {...swalProps}
-                    didClose={() => {
-                        Swal.fire({
-                            title: "Cancelled",
-                            text: "Your bucket has not been created yet :)",
-                            icon: "error",
-                            confirmButtonColor: "#F58522",
-                            willClose: loadBucket
-                        });
-                        // run when swal is closed...
-                    }}
-                    onConfirm={async (result: any) => {
-
-                        if (result.isConfirmed) {
-
-                            dispatch(createThunk(bucket_name as string)).then((value) => {
-
-                                const data = value.payload as CreateBucketRoot
-
-                                if (data.status) {
-
-                                    Swal.fire({
-                                        title: "Created!",
-                                        text: "Your bucket has been created.",
-                                        icon: "success",
-                                        confirmButtonColor: "#F58522",
-                                        willClose: loadBucket
-                                    });
-
-                                } else {
-                                    // toast.error("ບໍ່ສາມາດເຂົ້າສູ່ລະບົບ: " + data.error);
-                                }
-                            })
-                        }
-                        // run when clieked in confirm and promise is resolved...
-                    }}
-                />
-
+                {/* <TreeView /> */}
 
                 <div className='h-16'></div>        {/* <ScrollArea className="w-auto h-screen"></ScrollArea> */}
             </div>

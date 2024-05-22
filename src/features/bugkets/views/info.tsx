@@ -103,7 +103,7 @@ export default function InfoPage({
                 <DropdownMenuSeparator></DropdownMenuSeparator>
 
                 <div className="flex flex-row justify-center">
-                    <Folder className="fill-zinc-500 text-zinc-500 mr-4 mt-10 mb-20" size={75} />
+                    <Folder className="fill-orange-400 text-orange-400 mr-4 mt-10 mb-20" size={75} />    {/* zinc-500 */}
                 </div>
 
                 {/* <AspectRatio ratio={2 / 1} className="bg-muted rounded-md">
@@ -115,7 +115,7 @@ export default function InfoPage({
                     />
                 </AspectRatio> */}
 
-                <p className="text-sm font-medium mt-0 mb-3">Who has access</p>
+                {/* <p className="text-sm font-medium mt-0 mb-3">Who has access</p>
 
                 <div className='flex flex-row'>
                     {owner.map((own) => <ProfileHoverCard info={own} size={"size-7 mr-1"} setCopyButton={setCopyButton} copyButton={copyButton} setCopyContact={setCopyContact} copyContact={copyContact} />)}
@@ -150,12 +150,12 @@ export default function InfoPage({
 
                 <p className="text-xs mt-2 mb-3 font-ligh text-gray-400">Private to you</p>
 
-                <Button type="button" className="rounded-full text-orange-500 text-xs border-gray-400 mb-5" variant="outline" onClick={() => alert('Manage access')}>Manage access</Button>
+                <Button type="button" className="rounded-full text-orange-500 text-xs border-gray-400 mb-5" variant="outline" onClick={() => alert('Manage access')}>Manage access</Button> */}
 
                 <DropdownMenuSeparator></DropdownMenuSeparator>
 
 
-                <p className="text-sm font-medium mt-5 mb-3">File details</p>
+                <p className="text-sm font-medium mt-5 mb-8">Bucket details</p>     {/* File mb-3 */}
 
                 {info.map((file: any) =>
                 (
