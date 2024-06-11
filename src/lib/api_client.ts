@@ -26,7 +26,7 @@ const getHttpHeaders1 = (isAuthenticated = false): AxiosRequestConfig => {
     return {};
 };
 
-const getHttpHeaders = (isAuthenticated = false, apiKey?: string): AxiosRequestConfig => {
+const getHttpHeaders = (isAuthenticated = false, apiKey?: string, data?: any): AxiosRequestConfig => {
     const token: any = cookies().get('token')?.value
     if (isAuthenticated) {
         if (apiKey == null) {
@@ -41,6 +41,7 @@ const getHttpHeaders = (isAuthenticated = false, apiKey?: string): AxiosRequestC
                     Authorization: `Bearer ${token}`,
                     "x-api-key": apiKey
                 },
+                data:data
             };
         }
 
@@ -74,7 +75,8 @@ const put = (path: string, data: any): Promise<AxiosResponse> =>
 
 const patch = (path: string, data: any): Promise<AxiosResponse> =>
     axiosInstance.post(path, data, getHttpHeaders());
-
+const delAPIKEY = (path: string, data: any, isAuthenticated = false, apiKey: string): Promise<AxiosResponse> =>
+    axiosInstance.delete(path,  getHttpHeaders(isAuthenticated, apiKey, data));
 const ApiClinet = {
     get,
     getMethodWithToken,
@@ -83,5 +85,6 @@ const ApiClinet = {
     postWITHAPIKEY,
     put,
     patch,
+    delAPIKEY
 }
 export default ApiClinet;

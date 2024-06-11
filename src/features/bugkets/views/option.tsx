@@ -150,13 +150,14 @@ export default function BucketOption({
       //   // run when swal is opened...
       // }}
       didClose={() => {
-        Swal.fire({
-          title: "Cancelled",
-          text: "Your bucket is safe :)",
-          icon: "error",
-          confirmButtonColor: "#F58522",
-          willClose: loadBucket
-        });
+        // Swal.fire({
+        //   title: "Cancelled",
+        //   text: "Your bucket is safe :)",
+        //   icon: "error",
+        //   confirmButtonColor: "#F58522",
+        //   willClose: loadBucket
+        // });
+
         // run when swal is closed...
       }}
       onConfirm={async (result: any) => {

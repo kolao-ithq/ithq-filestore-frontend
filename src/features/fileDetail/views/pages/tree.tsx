@@ -5,6 +5,10 @@ import * as React from "react"
 
 import ProfileHoverCard from "./profileHvrCrd"
 
+
+import TreeView, { flattenTree } from "react-accessible-treeview";
+
+
 import { ScrollArea } from "@/components/ui/scroll-area"
 
 // import React from 'react'
@@ -1263,7 +1267,7 @@ const tree = [
 ]
 
 
-export default function TreeView() {
+export default function TreeViewT() {
 
     const [searcButton, setSearcButton] = React.useState(0)
     const [fileId, setFileId] = React.useState('')
@@ -1324,17 +1328,151 @@ export default function TreeView() {
     const [copyContact, setCopyContact] = React.useState(false)
 
 
+    const folder = {
+        name: "",
+        id: "treeview",
+        children: [
+            {
+                id: "fruits",
+                name: "Fruits",
+                children: [
+                    { name: "Avocados", id: "avocados" },
+                    {
+                        name: "Bananas", id: "bananas",
+                        children: [
+                            {
+                                name: "Berries1", id: "berries1",
+                                children: [
+                                    {
+                                        name: "Berries2", id: "berries2",
+                                        children: [
+                                            {
+                                                name: "Berries3", id: "berries3",
+                                                children: [
+                                                    {
+                                                        name: "Berries4", id: "berries4",
+                                                        children: [
+                                                            {
+                                                                name: "Berries5", id: "berries5",
+                                                                children: [
+                                                                    {
+                                                                        name: "Berries6", id: "berries6",
+                                                                        children: [
+                                                                            {
+                                                                                name: "Berries7", id: "berries7",
+                                                                                children: [
+                                                                                    { name: "Berries8", id: "berries8" },
+                                                                                    { name: "Oranges8", id: "oranges8" },
+                                                                                ]
+                                                                            },
+                                                                            { name: "Oranges7", id: "oranges7" },
+                                                                        ]
+                                                                    },
+                                                                    { name: "Oranges6", id: "oranges6" },
+                                                                ]
+                                                            },
+                                                            { name: "Oranges5", id: "oranges5" },
+                                                        ]
+                                                    },
+                                                    { name: "Oranges4", id: "oranges4" },
+                                                ]
+                                            },
+                                            { name: "Oranges3", id: "oranges3" },
+                                        ]
+                                    },
+                                    { name: "Oranges2", id: "oranges2" },
+                                ]
+                            },
+                            { name: "Oranges1", id: "oranges1" },
+                        ]
+                    },
+                    { name: "Berries", id: "berries" },
+                    { name: "Oranges", id: "oranges" },
+                    { name: "Pears", id: "pears" },
+                ],
+            },
+            {
+                id: "drinks",
+                name: "Drinks",
+                children: [
+                    { name: "Apple Juice", id: "appleJuice" },
+                    { name: "Chocolate", id: "chocolate" },
+                    { name: "Coffee", id: "coffee" },
+                    {
+                        id: "tea",
+                        name: "Tea",
+                        children: [
+                            { name: "Black Tea", id: "blackTea" },
+                            { name: "Green Tea", id: "greenTea" },
+                            { name: "Red Tea", id: "redTea" },
+                            { name: "Matcha", id: "matcha" },
+                        ],
+                    },
+                ],
+            },
+            {
+                id: "vegetables",
+                name: "Vegetables",
+                children: [
+                    { name: "Beets", id: "beets" },
+                    { name: "Carrots", id: "carrots" },
+                    { name: "Celery", id: "celery" },
+                    { name: "Lettuce", id: "lettuce" },
+                    { name: "Onions", id: "onions" },
+                ],
+            },
+        ],
+    };
+
+    const data = flattenTree(folder);
+
+
     return (
         <>
             <ScrollArea className="w-full h-screen">
                 <div className="pr-4 pb-8">
+
+
+                    <TreeView
+                        data={data}
+                        aria-label="Controlled expanded node tree"
+                        defaultExpandedIds={["fruits"]}
+                        // focusedId={focusId}
+                        defaultDisabledIds={["bananas"]}
+                        nodeRenderer={({
+                            element,
+                            isBranch,
+                            isExpanded,
+                            isDisabled,
+                            getNodeProps,
+                            level,
+                            handleExpand,
+                        }) => {
+                            return (
+                                <div
+                                    {...getNodeProps({ onClick: handleExpand })}
+                                    style={{
+                                        marginLeft: 40 * (level - 1),
+                                        opacity: isDisabled ? 0.5 : 1,
+                                    }}
+                                >
+                                    {/* {isBranch && <ArrowIcon isOpen={isExpanded} />} */}
+                                    <span className="name">
+                                        {element.name} [{element.id}]
+                                    </span>
+                                </div>
+                            );
+                        }}
+                    />
+
+
 
                     {/* {tree.map((val, key) => val.name + ' ' + val.children.length)} */}
 
                     {tree.map((val, key) => <div className="ml-5">
 
                         <div className={'text-sm font-medium flex flex-row mb-8 mt-' + (key === 0 ? 3 : 8)}>
-                            <Play  /> {val.name}</div>
+                            <Play /> {val.name}</div>
 
                         {val.children.map((val, key) => <div className="ml-5">
                             <p className={'text-sm font-medium mb-8 mt-' + (key === 0 ? 3 : 8)}>{val.name}</p>

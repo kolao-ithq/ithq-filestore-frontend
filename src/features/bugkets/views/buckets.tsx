@@ -3,6 +3,7 @@
 import React, { FormEvent } from 'react'
 
 import BucketOption from './option';
+// import BucketOption from './bOption';
 import InfoPage from '@/features/bugkets/views/info';
 import BucketLoader from './bLoader';
 
@@ -20,7 +21,8 @@ import { useAppDispatch } from '@/lib/store';
 import { RootBugketModel } from '../models/bucket.model';
 import { CreateBucketRoot } from '../models/create_bucket_model';
 
-import TreeView from '@/features/fileDetail/views/pages/tree';
+// import TreeViewT from '@/features/fileDetail/views/pages/tree';
+// import TreeView, { flattenTree } from "react-accessible-treeview";
 
 
 export default function BucketPage() {
@@ -190,3 +192,14 @@ export default function BucketPage() {
         </div>
     )
 }
+
+
+//     const baseClass = "arrow";
+//     const classes = cx(
+//         baseClass,
+//         { [`${baseClass}--closed`]: !isOpen },
+//         { [`${baseClass}--open`]: isOpen },
+//         className
+//     );
+//     return <IoMdArrowDropright className={classes} />;
+// };

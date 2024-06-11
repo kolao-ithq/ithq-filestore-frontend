@@ -2,7 +2,7 @@
 import ApiClinet from "@/lib/api_client"
 import { RootBugketModel, BucketInfoModel, BucketItemModel } from "../models/bucket.model"
 import { AxiosError } from "axios"
-import { CreateBucketRoot, DeleteBucketModel, DeleteFileModel, UploadFilePayload, UploadFileRoot } from "../models/create_bucket_model"
+import { CreateBucketRoot, DeleteBucketModel, DeleteFileModel, DeleteFilePayload, UploadFilePayload, UploadFileRoot } from "../models/create_bucket_model"
 
 
 const FetchBucket = async (): Promise<RootBugketModel> => {
@@ -92,11 +92,18 @@ export const DeleteBucket = async (name: string): Promise<DeleteBucketModel> => 
 }
 
 
-export const DeleteFile = async (name: string): Promise<DeleteFileModel> => {
+export const DeleteFile = async (payload: DeleteFilePayload): Promise<DeleteFileModel> => {
     try {
-        const res = await ApiClinet.del(`/api/v1/file/delete/${name}`, true);
+        const res = await ApiClinet.delAPIKEY(`/api/v1/file/delete`,{
+            "bucket" : payload.bucket,
+            "file_name" : payload.file_name
+        },  true, payload.apiKey);
+        console.log({
+            "bucket" : payload.bucket,
+            "file_name" : payload.file_name
+        });
         const data: DeleteFileModel = res.data;
-        data.fileName = name
+        data.fileName = payload.file_name
         return data
     } catch (error) {
         const err = error as AxiosError;

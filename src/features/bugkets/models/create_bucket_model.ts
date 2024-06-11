@@ -27,6 +27,19 @@ export interface DeleteFileModel {
   fileName: string
 }
 
+export interface DeleteFileData {
+  bucket: string
+  file_name: string
+  // file_path: string
+}
+
+
+export interface DeleteFilePayload {
+  // formData: FormData
+  bucket: string
+  file_name: string,
+  apiKey: string
+}
 
 
 
