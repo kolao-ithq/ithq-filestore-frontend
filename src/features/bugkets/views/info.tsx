@@ -26,20 +26,11 @@ import { stringify } from "querystring";
 import ProfileHoverCard from "@/features/fileDetail/views/pages/profileHvrCrd";
 
 
-export default function InfoPage({
-    // id, pointBucket, bname, bview, openBucket, viewInfo, pressBucket
-    bview, hideInfo
-}: {
-    // id: any,
-    // pointBucket: any,
-    // bname: any,
-    // bview: boolean,
-    bview: any,
-    // openBucket: (open: any) => void,
-    // hideInfo: (open: boolean) => void, 
-    hideInfo: (open: any) => void,
-    // pressBucket: any
-}) {
+export default function InfoPage({ bview, hideInfo }:
+    {
+        bview: any,
+        hideInfo: (open: any) => void
+    }) {
 
     const [copyButton, setCopyButton] = React.useState(false)
     const [copyContact, setCopyContact] = React.useState(false)
@@ -54,11 +45,17 @@ export default function InfoPage({
     const infoReducer = useSelector(bucketSelector)
     const dispatch = useAppDispatch();
 
+    // React.useEffect(() => {
+    //     dispatch(infoThunk(bview));
+    // }, [])
+
+    // async function viewDetail() { viewInfo(bname); dispatch(infoThunk(bname)); }
+
     const bInfo = infoReducer.info?.data
 
     const info = [
-        { title: 'Type', deatil: 'Bucket Folder' },
-        { title: 'Name', deatil: bInfo?.bucket_name },
+        // { title: 'Type', deatil: 'Bucket Folder' },
+        { title: 'Name', deatil: bInfo?.bucket_name.toUpperCase() },
         { title: 'ID', deatil: bInfo?.bucket_id },     // { title: 'Size', deatil: '1 KB' },
         { title: 'KEY', deatil: bInfo?.bucket_key },    // { title: 'Storage used', deatil: '1 KB' },
         // { title: 'Location', deatil: 'My Drive', control: 'Button', icon: BookMarkedIcon },
@@ -72,10 +69,11 @@ export default function InfoPage({
 
 
     return (
-        <ScrollArea className="h-screen bg-white ml-4 mr-2 mt-0.5">
+        // <ScrollArea className="h-screen bg-white ml-4 mr-2 mt-0.5">
+        <ScrollArea className="bg-white ">
             <div className="pr-4 pb-8 ml-4">
 
-                <div className="flex flex-row text-sm font-medium mt-4 justify-between mb-10">
+                <div className="hidden flex-row text-sm font-medium mt-4 justify-between mb-10">
                     <div className="flex flex-row">
                         <Folder className="fill-gray-600 text-gray-600 mr-4 mt-3" size={16} />
 
@@ -100,10 +98,10 @@ export default function InfoPage({
                     </TooltipProvider>
                 </div>
 
-                <DropdownMenuSeparator></DropdownMenuSeparator>
+                {/* <DropdownMenuSeparator></DropdownMenuSeparator> */}
 
                 <div className="flex flex-row justify-center">
-                    <Folder className="fill-orange-400 text-orange-400 mr-4 mt-10 mb-20" size={75} />    {/* zinc-500 */}
+                    <Folder className="fill-orange-400 text-orange-400 mr-4 mt-10 mb-10" size={75} />    {/* zinc-500 */}
                 </div>
 
                 {/* <AspectRatio ratio={2 / 1} className="bg-muted rounded-md">
@@ -152,17 +150,18 @@ export default function InfoPage({
 
                 <Button type="button" className="rounded-full text-orange-500 text-xs border-gray-400 mb-5" variant="outline" onClick={() => alert('Manage access')}>Manage access</Button> */}
 
-                <DropdownMenuSeparator></DropdownMenuSeparator>
+                {/* <DropdownMenuSeparator></DropdownMenuSeparator> */}
 
 
-                <p className="text-sm font-medium mt-5 mb-8">Bucket details</p>     {/* File mb-3 */}
+                <p className="text-sm font-medium mt-5 mb-8">Bucket details</p>
+                {/* File mb-3 */}
 
-                {info.map((file: any) =>
+                {info.map((file: any, fkey: number) =>
                 (
                     <div className="flex-1 space-y-1 mb-4">
                         <p className="text-xs font-normal leading-none text-black">{file.title}</p>
                         {
-                            (!file.control ? <p className="text-xs font-sans text-slate-600">{file.deatil}</p>
+                            (!file.control ? <p className={(fkey !== 0 ? 'text-slate-600' : 'text-orange-600') + ' text-xs font-sans'}>{file.deatil}</p>
                                 :
                                 (file.control === 'Button' ?
                                     <Button type="button" variant="outline" onClick={() => alert(file.deatil)} className="h-8 text-xs">

@@ -2,7 +2,7 @@
 
 import React from 'react'
 
-import { EllipsisVertical, FolderOpen, Info, Trash2 } from 'lucide-react';
+import { EllipsisVertical, FolderOpen, Info, Trash2, Eye, Table2, Navigation } from 'lucide-react';
 
 import {
   DropdownMenu,
@@ -24,6 +24,8 @@ import { deleteBucket, infoThunk } from '../controller/bucket.controller';
 import Swal from 'sweetalert2'
 import SweetAlert2 from 'react-sweetalert2';
 import { DeleteBucketModel } from '../models/create_bucket_model';
+
+import { Dialog, DialogContent, DialogFooter, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog"
 
 
 export default function BucketOption({
@@ -63,11 +65,26 @@ export default function BucketOption({
     {
       group: [
         { name: 'Open', icon: FolderOpen, action: openBucket, param: bname },
-        { name: 'Details', icon: Info, action: viewDetail },
+        {
+          name: 'Details', icon: Info, action: viewDetail2,
+          sub: [
+            //   { name: 'Preview', icon: Eye, color: 'text-gray-900' },
+            //   { name: 'Google Sheets', icon: Table2, color: 'text-green-600' },
+            //   { name: 'AppSheet', icon: Navigation, color: 'fill-cyan-600 text-cyan-600' }
+          ],
+        },
         { name: 'Delete', icon: Trash2, action: delBucket },
       ]
     }
   ]
+
+  async function viewDetail2() {
+
+    dispatch(infoThunk(bname));
+    viewInfo(bname);
+
+    // actions[0].group[1].sub?.push({ name: 'Preview', icon: Eye, color: 'text-gray-900' }:any{})
+  }
 
   return (<>
     <DropdownMenu>
@@ -87,14 +104,18 @@ export default function BucketOption({
       <DropdownMenuContent align="start" className="w-[300px] font-normal text-gray-700">
         {actions.map((action: any, key: number) => (
           <DropdownMenuGroup>
-            {action.group.map((item: any) => {
+            {action.group.map((item: any, ikey: number) => {
               const icon = <item.icon size={14} className='text-gray-800 mr-4' />
               const name = item.name
-              const subTtem = item.sub
+              const subTtem = item.sub    //   onMouseEnter
+
+              const menu = <DropdownMenuItem className='text-xs' disabled={item.disabled}
+                onClick={() => { item.action(item.param) }} >{icon} {name}</DropdownMenuItem>
 
               if (!subTtem?.length) {
-                return <DropdownMenuItem className='text-xs' onClick={() => { item.action(item.param) }} disabled={item.disabled} >
-                  {icon} {name}</DropdownMenuItem>
+
+                return (ikey !== 1 ? menu : <DialogTrigger asChild>{menu}</DialogTrigger>
+                )
 
               } else {
                 return <DropdownMenuSub>
